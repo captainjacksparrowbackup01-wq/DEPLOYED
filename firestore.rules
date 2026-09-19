@@ -1,0 +1,54 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Global helper functions
+    function isSignedIn() {
+      return request.auth != null;
+    }
+    
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    // Individual User Profiles database
+    match /users/{userId} {
+      allow read: if isSignedIn();
+      allow create, update: if isOwner(userId);
+      allow delete: if false;
+
+      // Individual artisan's own private/dedicated product catalog database
+      match /products/{productId} {
+        allow read: if true;
+        allow create, update, delete: if isOwner(userId);
+      }
+
+      // Individual user's own enquiries database (inbox & sent enquiries)
+      match /enquiries/{enquiryId} {
+        allow read: if isOwner(userId);
+        allow create: if isSignedIn();
+        allow update, delete: if isOwner(userId);
+      }
+    }
+
+    // Global Products catalog (for public marketplace search & discovery)
+    match /products/{productId} {
+      allow read: if true;
+      allow create: if isSignedIn() && request.resource.data.artisanId == request.auth.uid;
+      allow update, delete: if isSignedIn() && resource.data.artisanId == request.auth.uid;
+    }
+
+    // Global B2B Enquiries
+    match /enquiries/{enquiryId} {
+      allow create: if isSignedIn();
+      allow read: if isSignedIn() && (
+        resource.data.artisanId == request.auth.uid ||
+        resource.data.buyerId == request.auth.uid
+      );
+      allow update: if isSignedIn() && (
+        resource.data.artisanId == request.auth.uid ||
+        resource.data.buyerId == request.auth.uid
+      );
+      allow delete: if false;
+    }
+  }
+}

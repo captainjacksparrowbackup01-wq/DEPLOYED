@@ -1,0 +1,10 @@
+{
+  "name": "Kirti AI",
+  "description": "AI-Driven Market Linkage and Smart Cataloging Mobile Application for Marginalized Artisans",
+  "requestFramePermissions": [
+    "microphone"
+  ],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

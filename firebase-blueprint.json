@@ -1,0 +1,106 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "Individual user profile database containing artisan or buyer credentials, regional cluster, bio, payout data, and verification status",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "email": { "type": "string" },
+        "displayName": { "type": "string" },
+        "role": { "type": "string", "enum": ["seller", "buyer"] },
+        "phone": { "type": "string" },
+        "location": { "type": "string" },
+        "craftSpecialty": { "type": "string" },
+        "workshopName": { "type": "string" },
+        "organization": { "type": "string" },
+        "bio": { "type": "string" },
+        "upiId": { "type": "string" },
+        "experienceYears": { "type": "number" },
+        "photoURL": { "type": "string" },
+        "authProvider": { "type": "string" },
+        "kycStatus": { "type": "string", "enum": ["verified", "pending"] },
+        "createdAt": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["uid", "email", "role"]
+    },
+    "Product": {
+      "title": "Product",
+      "description": "Handcrafted heritage product catalog item",
+      "type": "object",
+      "properties": {
+        "artisanId": { "type": "string" },
+        "artisanName": { "type": "string" },
+        "artisanLocation": { "type": "string" },
+        "title": { "type": "string" },
+        "category": { "type": "string" },
+        "subcategory": { "type": "string" },
+        "material": { "type": "string" },
+        "craftType": { "type": "string" },
+        "color": { "type": "string" },
+        "descriptionHindi": { "type": "string" },
+        "descriptionEnglish": { "type": "string" },
+        "craftStory": { "type": "string" },
+        "region": { "type": "string" },
+        "imageUrl": { "type": "string" },
+        "materialCost": { "type": "number" },
+        "laborCost": { "type": "number" },
+        "otherCost": { "type": "number" },
+        "suggestedMinPrice": { "type": "number" },
+        "suggestedMaxPrice": { "type": "number" },
+        "recommendedPrice": { "type": "number" },
+        "finalPrice": { "type": "number" },
+        "mrp": { "type": "number" },
+        "status": { "type": "string", "enum": ["draft", "published"] },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["artisanId", "title", "finalPrice", "status"]
+    },
+    "Enquiry": {
+      "title": "Enquiry",
+      "description": "B2B buyer wholesale or direct custom craft enquiry",
+      "type": "object",
+      "properties": {
+        "productId": { "type": "string" },
+        "productTitle": { "type": "string" },
+        "productPrice": { "type": "number" },
+        "artisanId": { "type": "string" },
+        "artisanName": { "type": "string" },
+        "buyerId": { "type": "string" },
+        "buyerName": { "type": "string" },
+        "buyerPhone": { "type": "string" },
+        "buyerEmail": { "type": "string" },
+        "organization": { "type": "string" },
+        "quantity": { "type": "number" },
+        "customNotes": { "type": "string" },
+        "totalEstimatedCost": { "type": "number" },
+        "status": { "type": "string", "enum": ["pending", "new", "reviewed", "replied"] },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["productId", "artisanId", "buyerName", "quantity"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "UserProfile",
+      "description": "Individual profile database root for authenticated artisans and buyers"
+    },
+    "/users/{userId}/products/{productId}": {
+      "schema": "Product",
+      "description": "Individual artisan's dedicated craft catalog database subcollection"
+    },
+    "/users/{userId}/enquiries/{enquiryId}": {
+      "schema": "Enquiry",
+      "description": "Individual user's dedicated enquiries and order communication database"
+    },
+    "/products/{productId}": {
+      "schema": "Product",
+      "description": "Global aggregated collection of handicraft listings for marketplace discovery"
+    },
+    "/enquiries/{enquiryId}": {
+      "schema": "Enquiry",
+      "description": "B2B wholesale enquiries exchange between buyers and artisans"
+    }
+  }
+}
